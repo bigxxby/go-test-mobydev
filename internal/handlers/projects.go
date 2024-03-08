@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -8,22 +9,45 @@ import (
 	"text/template"
 )
 
-func ProjectsHanlder(w http.ResponseWriter, r *http.Request) {
+func (mHandler Main_handler) ProjectsHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
 		ErrorHandler(w, r, http.StatusMethodNotAllowed)
 		return
 	}
-	// r.FormValue()
+	temp, err := template.ParseFiles("ui/templates/projects.html")
+	if err != nil {
+		log.Println(err.Error())
+		return
+	}
+	err = temp.Execute(w, nil)
+	if err != nil {
+		log.Println(err.Error())
+		return
+	}
 }
 
 func (mHandler Main_handler) CreateProjectsHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
+		cookie, err := r.Cookie("sessionID")
+		sessionId := cookie.Value
+		user, authorized, err := mHandler.Data.IsAuthorised(sessionId)
+		if err != nil {
+			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+			return
+		}
+
+		if !authorized {
+			http.Redirect(w, r, "/", http.StatusUnauthorized)
+			return
+		}
+
 		temp, err := template.ParseFiles("ui/templates/createProject.html")
 		if err != nil {
 			log.Println(err.Error())
 			return
 		}
-		err = temp.Execute(w, nil)
+
+		err = temp.Execute(w, user.Id)
 		if err != nil {
 			log.Println(err.Error())
 			return
@@ -77,5 +101,27 @@ func (mHandler Main_handler) CreateProjectsHandler(w http.ResponseWriter, r *htt
 
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprintf(w, "Project added successfully")
+	} else {
+		ErrorHandler(w, r, http.StatusMethodNotAllowed)
+		return
 	}
+}
+
+func (mHandler Main_handler) GetProjectsHandler(w http.ResponseWriter, r *http.Request) {
+	projects, err := mHandler.Data.GetAllProjects()
+	if err != nil {
+		http.Error(w, "Failed to retrieve projects", http.StatusInternalServerError)
+		return
+	}
+
+	jsonData, err := json.Marshal(projects)
+	if err != nil {
+		http.Error(w, "Failed to encode projects to JSON", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+
+	w.WriteHeader(http.StatusOK)
+	w.Write(jsonData)
 }

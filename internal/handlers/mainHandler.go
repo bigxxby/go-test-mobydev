@@ -7,4 +7,3 @@ import (
 type Main_handler struct {
 	Data database.DatabaseStruct
 }
-

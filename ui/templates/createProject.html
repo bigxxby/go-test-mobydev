@@ -8,40 +8,40 @@
 <body>
     <h2>Add Project</h2>
     <form action="/createProject" method="POST">
-        <label for="userId">User ID:</label><br>
-        <input type="text" id="userId" name="userId"><br>
+        <label for="userId">User ID: {{ . }}</label><br>
+        <input value="{{ . }}" type="text" id="userId" name="userId" hidden><br>
 
         <label for="year">Year:</label><br>
-        <input type="text" id="year" name="year"><br>
+        <input type="text" id="year" name="year" required><br>
 
         <label for="duration">Duration:</label><br>
-        <input type="text" id="duration" name="duration"><br>
+        <input type="text" id="duration" name="duration" required><br>
 
         <label for="name">Name:</label><br>
-        <input type="text" id="name" name="name"><br>
+        <input type="text" id="name" name="name" required><br>
 
         <label for="category">Category:</label><br>
-        <input type="text" id="category" name="category"><br>
+        <input type="text" id="category" name="category" required><br>
 
         <label for="projectType">Project Type:</label><br>
-        <input type="text" id="projectType" name="projectType"><br>
+        <input type="text" id="projectType" name="projectType" required><br>
 
         <label for="ageCategory">Age Category:</label><br>
-        <input type="text" id="ageCategory" name="ageCategory"><br>
+        <input type="text" id="ageCategory" name="ageCategory" required><br>
 
         <label for="keywords">Keywords:</label><br>
-        <input type="text" id="keywords" name="keywords"><br>
+        <input type="text" id="keywords" name="keywords" required><br>
 
         <label for="description">Description:</label><br>
-        <textarea id="description" name="description"></textarea><br>
+        <textarea id="description" name="description" required></textarea><br>
 
         <label for="director">Director:</label><br>
-        <input type="text" id="director" name="director"><br>
+        <input type="text" id="director" name="director" required ><br>
 
         <label for="producer">Producer:</label><br>
-        <input type="text" id="producer" name="producer"><br>
+        <input type="text" id="producer" name="producer" required><br>
 
-        <input type="submit" value="Submit">
+        <input type="submit" value="Submit" required>
     </form>
 </body>
 </html>

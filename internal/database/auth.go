@@ -9,7 +9,6 @@ import (
 
 func (db *DatabaseStruct) CheckUser(email, password string) (*User, bool, error) {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
-	// Begin transaction
 	tx, err := db.DB.Begin()
 	if err != nil {
 		return nil, false, err
@@ -44,22 +43,18 @@ func (db *DatabaseStruct) CheckUser(email, password string) (*User, bool, error)
 			return nil, false, nil
 		}
 
-		// Generate session ID
 		sessionID, err := GenerateSessionID()
 		if err != nil {
 			return nil, false, err
 		}
 
-		// Update session ID in the user struct
 		user.SessionId.String = sessionID
 
-		// Update session ID in the database
 		_, err = tx.Exec("UPDATE users SET session_id = ? WHERE id = ?", sessionID, user.Id)
 		if err != nil {
 			return nil, false, err
 		}
 
-		// Commit transaction
 		err = tx.Commit()
 		if err != nil {
 			log.Println(err.Error())
@@ -85,6 +80,7 @@ func GenerateSessionID() (string, error) {
 }
 
 func (db *DatabaseStruct) IsAuthorised(sessionId string) (*User, bool, error) {
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	tx, err := db.DB.Begin()
 	if err != nil {
 		log.Println(err.Error())
@@ -115,7 +111,6 @@ func (db *DatabaseStruct) IsAuthorised(sessionId string) (*User, bool, error) {
 			log.Println(err.Error())
 			return nil, false, err
 		}
-		log.Println("Logged : ", user)
 		if err := tx.Commit(); err != nil {
 			log.Println(err.Error())
 			return nil, false, err

@@ -1,39 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
-
+    
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile Page</title>
+    <script src="static/script/profile.js"></script>
 </head>
 
 <body>
-    <script>
-        function logout() {
-            fetch('/logout', {
-                method: 'POST',
-            })
-                .then(response => {
-                    if (response.ok) {
-                        alert('Logout successful');
-                    } else {
-                        alert('Logout failed');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-        }
-
-
-    </script>
     <h1>User Profile</h1>
     <button id="logoutButton" onclick="logout()">Logout</button>
+
     <table border="1">
         <tr>
             <th>ID</th>
             <td>{{ .Id }}</td>
+            <input type="text" id="id" value="{{.Id}}" hidden>
         </tr>
         <tr>
             <th>Email</th>
@@ -41,37 +25,28 @@
         </tr>
         <tr>
             <th>Name</th>
-            <td>{{ if .Name.Valid }}{{ .Name.String }}{{ else }}N/A{{ end }}</td>
+            <td>
+                <span id="name">{{ if .Name.Valid }}{{ .Name.String }}{{ else }}{{ end }}</span>
+                <input type="text" id="newName">
+            </td>
         </tr>
         <tr>
             <th>Phone</th>
-            <td>{{ if .Phone.Valid }}{{ .Phone.String }}{{ else }}N/A{{ end }}</td>
+            <td>
+                <span  id="phone">{{ if .Phone.Valid }}{{ .Phone.String }}{{ else }}{{ end }}</span>
+                <input type="text" id="newPhone">
+            </td>
         </tr>
         <tr>
             <th>Date of Birth</th>
-            <td>{{ if .DateOfBirth.Valid }}{{ .DateOfBirth.Time.Format "2006-01-02" }}{{ else }}N/A{{ end }}</td>
-        </tr>
-        <tr>
-            <th>Session ID</th>
-            <td>{{ if .SessionId.Valid }}{{ .SessionId.String }}{{ else }}N/A{{ end }}</td>
-        </tr>
-        <tr>
-            <th>Is Admin</th>
-            <td>{{ if .IsAdmin.Valid }}{{ if eq .IsAdmin.Int16 1 }}Yes{{ else }}No{{ end }}{{ else }}N/A{{ end }}</td>
-        </tr>
-        <tr>
-            <th>Created At</th>
-            <td>{{ if .CreatedAt.Valid }}{{ .CreatedAt.Time.Format "2006-01-02 15:04:05" }}{{ else }}N/A{{ end }}</td>
-        </tr>
-        <tr>
-            <th>Updated At</th>
-            <td>{{ if .UpdatedAt.Valid }}{{ .UpdatedAt.Time.Format "2006-01-02 15:04:05" }}{{ else }}N/A{{ end }}</td>
-        </tr>
-        <tr>
-            <th>Deleted At</th>
-            <td>{{ if .DeletedAt.Valid }}{{ .DeletedAt.Time.Format "2006-01-02 15:04:05" }}{{ else }}N/A{{ end }}</td>
+            <td>
+                <span id="dob">{{ if .DateOfBirth.Valid }}{{ .DateOfBirth.Time.Format "2006-01-02" }}{{ else }}{{ end }}</span>
+                <input type="date" id="newDob">
+            </td>
         </tr>
     </table>
+
+    <button id="saveChangesButton" onclick="saveChanges()">Save Changes</button>
 </body>
 
 </html>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <style>
+        #window {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            border: 1px solid #ccc;
+            padding: 20px;
+            z-index: 9999;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th,
+        td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>User List</h1>
+    <table id="userTable">
+        <tr>
+            <th>ID</th>
+            <th>Email</th>
+            <th>Password</th>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Date of Birth</th>
+            <th>Session ID</th>
+            <th>Is Admin</th>
+            <th>Created At</th>
+            <th>Updated At</th>
+            <th>Deleted At</th>
+            <th>Edit</th>
+        </tr>
+    </table>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            getUsers(); // Load users when the page loads
+            // Add event listener for the close button
+            const closeButton = document.getElementById('closeButton');
+            closeButton.addEventListener('click', function () {
+                const windowDiv = document.getElementById('window');
+                windowDiv.style.display = 'none';
+            });
+
+            // Add event listener for the send button
+            const sendButton = document.getElementById('sendButton');
+            sendButton.addEventListener('click', function () {
+                const userId = document.getElementById('userId').textContent;
+                const inputs = document.querySelectorAll('#window input');
+                const updatedUserData = {};
+                inputs.forEach(input => {
+                    const attribute = input.getAttribute('data-attribute');
+                    updatedUserData[attribute] = input.value;
+                });
+                fetch('/updateUserAdmin', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        userId: userId,
+                        userData: updatedUserData
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    alert('User data updated:', data);
+                    // You can add further actions here if needed, like closing the window or refreshing the user list
+                })
+                .catch(error => {
+                    alert('There was a problem with your fetch operation:', error);
+                    // Log the response from the server for further debugging
+                    response.text().then(text => {
+                        console.error('Server response:', text);
+                    });
+                });
+            });
+        });
+
+        function getUsers() {
+            fetch('/getAllUsers')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const userTable = document.getElementById('userTable');
+                    data.forEach(user => {
+                        const row = userTable.insertRow();
+                        row.innerHTML = `
+                            <td id="user${user.id}">${user.id}</td>
+                            <td>${user.email}</td>
+                            <td>${user.password}</td>
+                            <td>${user.name}</td>
+                            <td>${user.phone}</td>
+                            <td>${user.date_of_birth}</td>
+                            <td>${user.session_id}</td>
+                            <td>${user.is_admin}</td>
+                            <td>${user.created_at}</td>
+                            <td>${user.updated_at}</td>
+                            <td>${user.deleted_at}</td>
+                            <td><button class="editButton">Edit</button></td>
+                        `;
+                    });
+
+                    // Add event listener for each edit button
+                    const editButtons = document.querySelectorAll('.editButton');
+                    editButtons.forEach(button => {
+                        button.addEventListener('click', function () {
+                            const userId = this.parentElement.parentElement.querySelector('td:first-child').innerText;
+                            const windowDiv = document.getElementById('window');
+                            const userIdField = windowDiv.querySelector('#userId');
+                            userIdField.textContent = userId;
+
+                            // Populate input fields with user data
+                            const user = data.find(u => u.id === parseInt(userId));
+                            const inputs = windowDiv.querySelectorAll('input');
+                            inputs.forEach(input => {
+                                const attribute = input.getAttribute('data-attribute');
+                                input.value = user[attribute];
+                            });
+
+                            windowDiv.style.display = 'block';
+                        });
+                    });
+                })
+                .catch(error => {
+                    console.error('There was a problem with your fetch operation:', error);
+                });
+        }
+    </script>
+    <div class="window" id="window">
+        <!-- Edit window content -->
+        <h2>Edit Window</h2>
+        <p>User ID: <span id="userId"></span></p>
+        <label>Email: <input type="text" data-attribute="email"></label><br>
+        <label>Name: <input type="text" data-attribute="name"></label><br>
+        <label>Phone: <input type="text" data-attribute="phone"></label><br>
+        <label>Date of Birth: <input type="text" data-attribute="date_of_birth"></label><br>
+        <label>Is Admin: <input type="checkbox" data-attribute="is_admin"></label><br>
+        <button id="sendButton">Send</button>
+        <button id="closeButton">Close</button>
+    </div>
+</body>
+
+</html>
