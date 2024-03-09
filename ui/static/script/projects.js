@@ -14,10 +14,12 @@ function displayProjects(projects) {
     const projectsList = document.getElementById('projects-list');
 
     projects.forEach(project => {
+
         const projectElement = document.createElement('div');
         projectElement.innerHTML = `
-            <h2>Name: ${project.name.String}</h2>
-            <h2>Created By: ${project.user_id.String}</h2>
+            
+            <h2>Name of the project: ${project.name.String}</h2>
+            <h2>Created By (User Id): ${project.user_id}</h2>
             <p><strong>Category:</strong> ${project.category.String}</p>
             <p><strong>Type:</strong> ${project.project_type.String}</p>
             <p><strong>Year:</strong> ${project.year.Int32}</p>

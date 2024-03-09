@@ -38,6 +38,7 @@ func main() {
 	http.HandleFunc("/admin", mHandler.AdminHandler)
 	http.HandleFunc("/getAllUsers", mHandler.GetAllUsersHandler)
 	http.HandleFunc("/updateUserAdmin", mHandler.UpdateUserAdminHandler)
+	http.HandleFunc("/deleteUser/", mHandler.DeleteUserAdminHandler)
 	log.Println("Server started at http://localhost:8080/")
 	http.ListenAndServe(":8080", nil)
 }

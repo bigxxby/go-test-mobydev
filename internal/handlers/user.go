@@ -2,6 +2,8 @@ package handlers
 
 import (
 	"encoding/json"
+	"io/ioutil"
+	"log"
 	"net/http"
 )
 
@@ -24,22 +26,46 @@ func (mHandler Main_handler) GetAllUsersHandler(w http.ResponseWriter, r *http.R
 }
 
 func (mHandler Main_handler) UpdateUserAdminHandler(w http.ResponseWriter, r *http.Request) {
-	err := r.ParseForm()
+	w.Header().Set("Content-Type", "application/json")
+	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		http.Error(w, "Error parsing form data", http.StatusInternalServerError)
+		http.Error(w, "Error reading request body", http.StatusInternalServerError)
 		return
 	}
 
-	userID := r.Form.Get("userId")
-	newName := r.Form.Get("name")
-	newPhone := r.Form.Get("phone")
-	newDOB := r.Form.Get("date_of_birth")
-	isAdmin := r.Form.Get("is_admin") == "on"
+	var userData struct {
+		UserID  string `json:"user_id"`
+		Name    string `json:"name"`
+		Phone   string `json:"phone"`
+		DOB     string `json:"date_of_birth"`
+		IsAdmin bool   `json:"is_admin"`
+	}
 
-	err = mHandler.Data.UpdateUserAdmin(userID, newName, newPhone, newDOB, isAdmin)
+	// Разбор JSON-данных в структуру
+	if err := json.Unmarshal(body, &userData); err != nil {
+		http.Error(w, "Error parsing JSON", http.StatusBadRequest)
+		return
+	}
+	err = mHandler.Data.UpdateUserAdmin(userData.UserID, userData.Name, userData.Phone, userData.DOB, userData.IsAdmin)
 	if err != nil {
 		http.Error(w, "Error updating user: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
+	log.Println("User with id:", userData.UserID, "updated")
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("User data updated successfully"))
+}
+
+func (mHandler Main_handler) DeleteUserAdminHandler(w http.ResponseWriter, r *http.Request) {
+	userID := r.URL.Query().Get("userId")
+	err := mHandler.Data.DeleteUser(userID)
+	if err != nil {
+		http.Error(w, "Error deleting user: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("User deleted successfully"))
 }

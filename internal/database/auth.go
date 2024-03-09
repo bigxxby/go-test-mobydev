@@ -13,12 +13,7 @@ func (db *DatabaseStruct) CheckUser(email, password string) (*User, bool, error)
 	if err != nil {
 		return nil, false, err
 	}
-	defer func() {
-		if err != nil {
-			tx.Rollback()
-			log.Println("Transaction rolled back due to error:", err.Error())
-		}
-	}()
+	defer tx.Rollback()
 
 	stmt, err := tx.Prepare("SELECT * FROM users WHERE email = ?")
 	if err != nil {

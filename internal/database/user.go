@@ -14,13 +14,7 @@ func (db *DatabaseStruct) AddUser(email, password string) error {
 	if err != nil {
 		return err
 	}
-
-	defer func() {
-		if err != nil {
-			tx.Rollback()
-			log.Println("Transaction rolled back due to error:", err.Error())
-		}
-	}()
+	defer tx.Rollback()
 
 	hashedPassword, err := logic.HashPassword(password)
 	if err != nil {
@@ -62,6 +56,27 @@ func (db *DatabaseStruct) UpdateUser(userID string, newName, newPhone string, ne
 		return err
 	}
 
+	return nil
+}
+
+func (db *DatabaseStruct) DeleteUser(userID string) error {
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
+
+	tx, err := db.DB.Begin()
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+
+	_, err = tx.Exec("DELETE FROM users WHERE id=?", userID)
+	if err != nil {
+		return err
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
