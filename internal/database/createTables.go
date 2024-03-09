@@ -1,5 +1,9 @@
 package database
 
+import (
+	"golang.org/x/crypto/bcrypt"
+)
+
 func (db *DatabaseStruct) CreateUsersTable() error {
 	tx, err := db.DB.Begin()
 	if err != nil {
@@ -58,6 +62,36 @@ func (db *DatabaseStruct) CreateProjectsTable() error {
             FOREIGN KEY(user_id) REFERENCES users(id)
         )
     `)
+	if err != nil {
+		return err
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (db *DatabaseStruct) CreateAdmin() error {
+	tx, err := db.DB.Begin()
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+
+	password := "12345678Aa#"
+
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+	
+	_, err = tx.Exec(`
+        INSERT INTO users (email, password, name, is_admin, created_at, updated_at)
+        VALUES (?, ?, ?, ?, datetime('now'), datetime('now'))
+    `, "admin@example.com", hashedPassword, "Admin", 1)
 	if err != nil {
 		return err
 	}

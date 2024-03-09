@@ -4,8 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Project</title>
+    <link rel="stylesheet" href="static/css/createProjects.css">
 </head>
 <body>
+    <header>
+        <h1>go-test-mobydev</h1>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/login">Login</a></li>
+                <li><a href="/reg">Register</a></li>
+                <li><a href="/projects">Projects</a></li>
+                <li><a href="/createProject">Create Project</a></li>
+                <li><a href="/admin">Admin Panel</a></li>
+            </ul>
+        </nav>
+    </header>
     <h2>Add Project</h2>
     <form action="/createProject" method="POST">
         <label for="userId">User ID: {{ . }}</label><br>
@@ -14,23 +28,24 @@
         <label for="year">Year:</label><br>
         <input type="text" id="year" name="year" required><br>
 
-        <label for="duration">Duration:</label><br>
-        <input type="text" id="duration" name="duration" required><br>
+        <label for="duration">Duration(Minutes):</label><br>
+        
+        <input   type="text" id="duration" name="duration" required><br>
 
         <label for="name">Name:</label><br>
-        <input type="text" id="name" name="name" required><br>
+        <input placeholder="Name of the project" type="text" id="name" name="name" required><br>
 
         <label for="category">Category:</label><br>
-        <input type="text" id="category" name="category" required><br>
+        <select id="category" name="category" required></select><br>
 
         <label for="projectType">Project Type:</label><br>
         <input type="text" id="projectType" name="projectType" required><br>
 
         <label for="ageCategory">Age Category:</label><br>
-        <input type="text" id="ageCategory" name="ageCategory" required><br>
+        <select id="ageCategory" name="ageCategory" required></select><br>
 
         <label for="keywords">Keywords:</label><br>
-        <input type="text" id="keywords" name="keywords" required><br>
+        <input placeholder="*Cartoon, Movie, etc" type="text" id="keywords" name="keywords" required><br>
 
         <label for="description">Description:</label><br>
         <textarea id="description" name="description" required></textarea><br>
@@ -43,5 +58,43 @@
 
         <input type="submit" value="Submit" required>
     </form>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var durationInput = document.getElementById('duration');
+        
+        durationInput.addEventListener('input', function(event) {
+            var inputValue = this.value;
+            inputValue = inputValue.replace(/\D/g, '');
+
+            if (parseInt(inputValue) > 240) {
+                inputValue = 240;
+            }
+
+            this.value = inputValue;
+        });
+    });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('year').addEventListener('input', function(e) {
+                this.value = this.value.replace(/[^0-9]/g, '');
+            });
+
+            var categorySelect = document.getElementById('category');
+            var categories = ['Action', 'Thriller', 'Drama', 'Comedy', 'Sci-Fi']; 
+            categories.forEach(function(category) {
+                var option = document.createElement('option');
+                option.text = category;
+                categorySelect.add(option);
+            });
+
+            var ageCategorySelect = document.getElementById('ageCategory');
+            var ageCategories = ['0+', '6+', '12+', '18+']; 
+            ageCategories.forEach(function(ageCategory) {
+                var option = document.createElement('option');
+                option.text = ageCategory;
+                ageCategorySelect.add(option);
+            });
+        });
+    </script>
 </body>
 </html>

@@ -71,7 +71,6 @@ func (mHandler Main_handler) UpdateProfileHandler(w http.ResponseWriter, r *http
 		http.Error(w, "Failed to decode JSON", http.StatusBadRequest)
 		return
 	}
-
 	err = mHandler.Data.UpdateUser(updateReq.Id, updateReq.Name, updateReq.Phone, updateReq.DateOfBirth)
 	if err != nil {
 		log.Println(err.Error())

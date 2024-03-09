@@ -1,3 +1,20 @@
+document.addEventListener("DOMContentLoaded", function() {
+    var phoneInput = document.getElementById('newPhone');
+
+    phoneInput.addEventListener('input', function(event) {
+        var inputValue = event.target.value;
+        var filteredValue = '';
+
+        for (var i = 0; i < inputValue.length; i++) {
+            var char = inputValue[i];
+            if (!isNaN(char) || char === '-') {
+                filteredValue += char;
+            }
+        }
+
+        event.target.value = filteredValue;
+    });
+});
 function logout() {
     fetch('/logout', {
         method: 'POST',
@@ -5,6 +22,8 @@ function logout() {
         .then(response => {
             if (response.ok) {
                 alert('Logout successful');
+                window.location.href = "index.html";
+
             } else {
                 alert('Logout failed');
             }

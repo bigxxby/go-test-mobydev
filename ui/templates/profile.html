@@ -1,52 +1,87 @@
 <!DOCTYPE html>
 <html lang="en">
-    
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile Page</title>
+    <!-- Подключаем CSS-стили -->
+    <link rel="stylesheet" href="static/css/profile.css">
+    <!-- Подключаем скрипт -->
     <script src="static/script/profile.js"></script>
 </head>
-
 <body>
-    <h1>User Profile</h1>
-    <button id="logoutButton" onclick="logout()">Logout</button>
+    <header>
+        <h1>go-test-mobydev</h1>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/login">Login</a></li>
+                <li><a href="/reg">Register</a></li>
+                <li><a href="/projects">Projects</a></li>
+                <li><a href="/createProject">Create Project</a></li>
+                <li><a href="/admin">Admin Panel</a></li>
+            </ul>
+        </nav>
+    </header>
 
-    <table border="1">
-        <tr>
-            <th>ID</th>
-            <td>{{ .Id }}</td>
-            <input type="text" id="id" value="{{.Id}}" hidden>
-        </tr>
-        <tr>
-            <th>Email</th>
-            <td>{{ .Email }}</td>
-        </tr>
-        <tr>
-            <th>Name</th>
-            <td>
-                <span id="name">{{ if .Name.Valid }}{{ .Name.String }}{{ else }}{{ end }}</span>
-                <input type="text" id="newName">
-            </td>
-        </tr>
-        <tr>
-            <th>Phone</th>
-            <td>
-                <span  id="phone">{{ if .Phone.Valid }}{{ .Phone.String }}{{ else }}{{ end }}</span>
-                <input type="text" id="newPhone">
-            </td>
-        </tr>
-        <tr>
-            <th>Date of Birth</th>
-            <td>
-                <span id="dob">{{ if .DateOfBirth.Valid }}{{ .DateOfBirth.Time.Format "2006-01-02" }}{{ else }}{{ end }}</span>
-                <input type="date" id="newDob">
-            </td>
-        </tr>
-    </table>
+    <div class="container">
+        <table border="1">
+            <tr>
+                <th>ID</th>
+                <td>{{ .Id }}</td>
+                <input type="text" id="id" value="{{.Id}}" hidden>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ .Email }}</td>
+            </tr>
+            <tr>
+                <th>Name</th>
+                <td>
+                    <span id="name">{{ if .Name.Valid }}{{ .Name.String }}{{ else }}{{ end }}</span>
+                </td>
+                <tr>
+                    <th>New name</th>
+                    <td>
+                        <input type="text" id="newName" placeholder="Enter new name" maxlength="12">
+                    </td>
+                </tr>
+            </tr>
+            <tr>
+            </tr>
+            <tr>
+                <th>Current Phone</th>
+                <td>
+                    <span id="currentPhone">{{ if .Phone.Valid }}{{ .Phone.String }}{{ else }}{{ end }}</span>
+                </td>
+            </tr>
+            <tr>
+                <th>New Phone</th>
+                <td>
+                    <input type="text" id="newPhone" placeholder="Enter new phone number" maxlength="12">
+                </td>
+            </tr>
+            <tr>
+                <th>Date of Birth</th>
+                <td>
+                    <span id="dob">{{ if .DateOfBirth.Valid }}{{ .DateOfBirth.Time.Format "2006-01-02" }}{{ else }}{{ end }}</span>
+                </td>
+                
+            </tr>
+            <tr>
+                <th>New Date of Birth</th>
+                <td>
+                    <input type="date" id="newDob">
+                </td>
+                
+            </tr>
+        </table>
+    </div>
 
-    <button id="saveChangesButton" onclick="saveChanges()">Save Changes</button>
+    <footer>
+        <button id="logoutButton" onclick="logout()">Logout</button>
+        <button id="saveChangesButton" onclick="saveChanges()">Save Changes</button>
+    </footer>
 </body>
-
 </html>

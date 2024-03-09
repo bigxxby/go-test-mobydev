@@ -3,10 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="static/css/style.css">
+    <link rel="stylesheet" href="static/css/login.css">
     <title>Login</title>
 </head>
 <body>
+    <header>
+        <h1>go-test-mobydev</h1>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/login">Login</a></li>
+                <li><a href="/reg">Register</a></li>
+                <li><a href="/projects">Projects</a></li>
+                <li><a href="/createProject">Create Project</a></li>
+                <li><a href="/admin">Admin Panel</a></li>
+            </ul>
+        </nav>
+    </header>
     <h1>Login</h1>
     <form action="/login" method="POST">
         <label for="email">Email:</label><br>
@@ -15,6 +28,6 @@
         <input type="password" id="password" name="password" required><br>
         <input type="submit" value="Login">
     </form>
-    <p>Dont have an account? <a href="/login">Login here</a>.</p>
+    <p>Dont have an account? <a href="/reg">Sign in</a>.</p>
 </body>
 </html>

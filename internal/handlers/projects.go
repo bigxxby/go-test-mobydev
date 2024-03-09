@@ -119,7 +119,6 @@ func (mHandler Main_handler) GetProjectsHandler(w http.ResponseWriter, r *http.R
 		http.Error(w, "Failed to encode projects to JSON", http.StatusInternalServerError)
 		return
 	}
-	log.Println(projects[0].UserId)
 	w.Header().Set("Content-Type", "application/json")
 
 	w.WriteHeader(http.StatusOK)

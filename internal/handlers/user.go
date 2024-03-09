@@ -41,7 +41,6 @@ func (mHandler Main_handler) UpdateUserAdminHandler(w http.ResponseWriter, r *ht
 		IsAdmin bool   `json:"is_admin"`
 	}
 
-	// Разбор JSON-данных в структуру
 	if err := json.Unmarshal(body, &userData); err != nil {
 		http.Error(w, "Error parsing JSON", http.StatusBadRequest)
 		return
